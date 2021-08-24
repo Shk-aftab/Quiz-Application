@@ -1,0 +1,229 @@
+{% extends "/studentSite/studentHome.html" %}
+{% block body %}
+
+<div class="p-sm-5">
+  <!-- {{quiz}} -->
+    <h1> Quiz Name :  {{quiz[3]}} </h1>
+    <div class="row">
+      <div class="col-sm-8">
+        <h5> Quiz Start : {{quiz[7]}}  ( Date Time ) </h5>
+        <h5> Quiz Ended : {{quiz[8]}}  ( Date Time )</h5>
+      </div>
+      <div class="col-sm-4">
+          <h3 class="float-right"> Quiz Score : {{score}} / {{quiz[6]}}  </h3>
+      </div>
+    </div>
+    
+
+    <hr>
+    <div id="wrap">
+        {% for i in range(questions.shape[0]): %}
+        <div id="quest{{i+1}}"  >
+          {% set question = questions.iloc[i].to_dict() %}  
+          
+            <div class="card border border-primary  mb-3" style="max-width: 100rem;">
+            {% if question['question_id'] in stud_answers['question_id'].values %}
+                {% set q_mark = stud_answers[stud_answers['question_id'] == question['question_id']]['question_score'].values[0]  %}
+                {% if q_mark > 0 : %}
+                  <div class="card-header bg-success ">  
+                {% else %}
+                  <div class="card-header bg-danger">  
+                {% endif %}
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="text-white"> Marks : {{ question['question_marks'] }}  </h6>
+                  <h6 class="text-white"> Marks Obtained : {{ q_mark }}  </h6>
+                  <h6 class="text-black"> Neg Marks : {{ question['question_neg_marks'] }}  </h6>            
+                </div>   
+            {% else %}
+               <div class="card-header">  
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="text-success"> Marks : {{ question['question_marks'] }}  </h6>
+                  <h6 class="text-danger"> Neg Marks : {{ question['question_neg_marks'] }}  </h6>            
+                </div>   
+            {% endif %}
+                    
+            </div>
+            <div class="card-body">     
+             
+              <h5 class="card-title"> Q.{{i+1}}. {{ question['question_text']}} </h5>
+              {% if question['question_type'] == 'MCQ' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+    
+                {% set quest_options = options[options['question_id'] == question['question_id'] ] %} 
+                {% set std_ans = stud_answers[stud_answers['question_id'] == question['question_id'] ]['Answer'].values[0] %} 
+                {% set cor_ans = cor_answers[cor_answers['question_id'] == question['question_id'] ]['option_id'].values[0] %} 
+                
+                {% for j in range(quest_options.shape[0]): %}
+                    {% set opt = quest_options.iloc[j].to_dict()%}
+                   
+                    <div class="form-check d-flex">
+                      <label class="form-check-label">    
+                        {% if opt['option_id'] == cor_ans | int : %}                              
+                                <input type="radio" disabled checked  class="form-check-input btn-success "  value=" {{ opt['option_id'] }}">                            
+                                                                                    
+                        {% elif opt['option_id'] | string == std_ans :   %}
+                             
+                            <input type="radio" disabled checked  class="form-check-input btn-danger"  value=" {{ opt['option_id'] }}"> 
+                            
+                        {% else %}    
+                           <input type="radio" disabled   class="form-check-input "  value=" {{ opt['option_id'] }}"> 
+
+                        {% endif %}
+
+                         {{opt['option']}}
+                    </label>
+                    </div> 
+    
+                {% endfor %}
+    
+              {% elif question['question_type'] == 'MSQ' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+                {% set quest_options = options[options['question_id'] == question['question_id'] ] %} 
+                {% set std_ans = stud_answers[stud_answers['question_id'] == question['question_id'] ]['Answer'].values %} 
+                {% set cor_ans = cor_answers[cor_answers['question_id'] == question['question_id'] ]['option_id'].values %} 
+                
+              
+                {% for j in range(quest_options.shape[0]): %}
+                    {% set opt = quest_options.iloc[j].to_dict()%}                    
+                    <div class="form-check d-flex">
+                      <label class="form-check-label" >     
+                        {% if opt['option_id'] | float in cor_ans : %}  
+                              <input class="form-check-input  btn-success" disabled readonly  type="checkbox"  value="{{ opt['option_id'] }}">   
+                          
+                        {% elif opt['option_id'] | string in std_ans and opt['option_id'] | float not in cor_ans:   %}      
+                             <input class="form-check-input  btn-danger" disabled  readonly type="checkbox"  value="{{ opt['option_id'] }}">         
+
+                        {% else %}    
+                           <input class="form-check-input" readonly disabled type="checkbox"  value="{{ opt['option_id'] }}">         
+
+                        {% endif %}
+                          {{opt['option']}}                     
+                      </label>                 
+                    </div>
+                {% endfor %}
+    
+              {% elif question['question_type'] == 'SA' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+                <div class="form-group" >  
+                  <label for="short_ans_txt" class="form-label"> Enter Answer </label>              
+                  <textarea class="form-control" required id="short_ans_txt" name="answer" rows="3" placeholder="Enter Short Answer" ></textarea>  
+                  <small  class="form-text text-muted">Enter answer in short evaluation will be done using NLTK Model. </small>                   
+                </div>
+              {% elif question['question_type'] == 'LA' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+                <div class="form-group">
+                  <label for="long_ans_txt" class="form-label mt-4">Default file input example</label>
+                  <input class="form-control" type="file" id="long_ans_txt">
+                </div>
+              {% elif question['question_type'] == 'MF' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+                <div>
+                {% set quest_options = options[options['question_id'] == question['question_id'] ] %} 
+                {% set std_ans = stud_answers[stud_answers['question_id'] == question['question_id'] ]['Answer'].values %}
+
+                {% set drop_options = [] %}
+                {% set lable_options = [] %}
+                {% set std_options = [] %}
+                {% for j in range(quest_options.shape[0]): %}
+                    {% set opt = quest_options.iloc[j].to_dict()%}              
+                    
+                    {% set labels =  opt['option'].split('|')  %} 
+                    {% set drop_options = drop_options.append(labels[1]) %}
+                    {% set lable_options = lable_options.append(labels[0]) %}
+
+                    {% if std_ans[j] %}
+                    {% set labels =  std_ans[j].split('|')  %} 
+                    {% set std_options = std_options.append(labels[1]) %}
+                     {% endif %}              
+                    
+                {% endfor %}
+                
+    
+                {% for j in range(quest_options.shape[0]): %}
+    
+                <div class="form-group row text-center">
+                  <label for="exampleSelect1" class="col-sm-6 col-form-label"> {{ lable_options[j] }} </label>
+                  <div class="col-sm-6">
+                      {% if std_options[j] == drop_options[j]  %}
+                      <select class="form-select bg-success text-white" name="{{ lable_options[j] }}" id="">                     
+                       
+                      {% else %}
+                      <select class="form-select bg-danger text-white" name="{{ lable_options[j] }}" id="">  
+                        <option class="bg-danger text-white"> {{ std_options[j] }} </option>
+                        
+                      {% endif %}
+                      <option class="bg-success text-white"> {{ drop_options[j] }} </option>
+                     
+                    </select>
+                  </div>
+                </div>            
+                  
+                {% endfor %}
+                </div>
+              {% elif question['question_type'] == 'FB' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+                {% set quest_options = options[options['question_id'] == question['question_id'] ]['option'].values %} 
+                {% set std_ans = stud_answers[stud_answers['question_id'] == question['question_id'] ]['Answer'].values %}
+
+                {% set lable_options = [] %}
+                {% set std_options = [] %}
+
+                {% for j in range(quest_options.shape[0]): %}                              
+                  {% set labels =  quest_options[j].split('|')  %}                  
+                  {% set lable_options = lable_options.append(labels[0]|int) %}
+                
+                {% endfor %}
+
+                {% for j in range(std_ans.shape[0]): %}                   
+                   {% set labels =  std_ans[j].split('|')  %} 
+                    {% set std_options = std_options.append(labels[1]) %}
+                {% endfor %}
+
+                {% for j in range( lable_options|max): %}
+               
+                   <div class="form-group row text-center">
+                    <label class="col-sm-6 col-form-label"> 
+                     
+                      Blank [{{ j+1 }}]   
+                    
+                    </label>
+                    <div class="col-sm-6">
+                      {% if std_ans[j] in quest_options  %}
+                        <select class="form-select bg-success text-white"  >
+                          <option class="bg-success text-white"> {{ std_options[j] }}  </option>
+                         
+                          
+                      {% else %}
+                      
+                        <select class="form-select bg-danger text-white" >  
+                        <option class="bg-danger text-white"> {{ std_options[j] }} </option>
+                        {% for i in range(quest_options.shape[0]): %}                        
+                          {% set labels =  quest_options[i].split('|')  %} 
+                        
+                          {% if  labels[0] | int == j+1  %}
+                           <option class="bg-success text-white"> {{ labels[1] }}  </option>
+                          {% endif %}
+                        {% endfor %}
+                        
+                      {% endif %}
+                      
+
+                      </select>
+                    </div>
+                  </div>     
+                    
+                {% endfor %}
+               
+    
+              {% endif %}
+    
+              
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        </div>
+
+</div>
+
+{% endblock %}

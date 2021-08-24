@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block content %} 
+
+{% if msg %}
+
+<div class="p-5">
+    <h1> {{ msg }}  </h1>
+</div>
+
+{% else %}
+
+<div class="p-sm-5">
+    <h2>Hello Prof.  {{ session['username']  }} {{ session['email']}} {{ session['role_id']  }} </h2>
+    <!-- <a href="/teacher/AddCourse"> Add Course </a> -->
+    <!-- <b><hr></b> -->
+     <strong> <hr style="height: 10px;"> </strong> 
+    <div class="row col-12 m-0">
+        <div class="col-md-2 p-sm-1 bg-primary ">
+            <!-- <h6> {{ session['courses'] }} </h6> -->
+            <nav class="navbar navbar-expand-md bg-primary flex-column">
+
+                <!-- <div class="row">  
+                     <div class="col-10">
+                        <a class="navbar-brand active" href="#"><h5><strong> Menu </strong> </h5> </a>
+                    </div> 
+                    <div class="col-2 ml-auto"> -->
+                    
+                    <button class="navbar-toggler text-white col-12" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+                        <!-- <span class=""> <strong>  Menu </strong> </span> -->
+                        <!-- <span class="navbar-toggler-icon bg-secondary"> </span> -->
+                        <span class=""> <i class="fas fa-bars"></i></span>
+
+                    </button>
+                    
+                        
+                    <!-- </div>                   
+                </div> -->
+               
+                
+                <div class="collapse navbar-collapse" id="navbarColor02" >
+                     <ul class="nav nav-pills flex-column " >
+                        <li class="nav-item text-center">
+                        <a class="nav-link active" href="/teacher/Home"><h5><strong> Menu </strong> </h5> </a>
+                        </li>
+                        <hr  class="text-white" style="height: 5px;">
+                        <li class="nav-item dropdown">
+                        <a class="nav-link active dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-book "></i> Courses</a>
+                        <div class="dropdown-menu" >
+                            <a class="dropdown-item" href="/teacher/AllCourse"> All Courses</a>
+                            <div class="dropdown-divider"></div>
+                            {% for course in  session['courses'] : %}                            
+                            <a class="dropdown-item" href="/teacher/Course?id={{course[0]}}&name={{course[1]}}">{{course[1]}} {{course[0]}}</a>
+                            <div class="dropdown-divider"></div>
+                            {% endfor %}
+                            <!-- <a class="dropdown-item" href="#">Another action</a> -->
+                            <a class="dropdown-item" href="/teacher/AddCourse">Add New Course</a>
+                        
+                        </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link active dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-file-alt "></i> Quizes</a>
+                            <div class="dropdown-menu" >
+                            <a class="dropdown-item" href="/teacher/AllQuiz"> All Quizes</a>
+                            <div class="dropdown-divider"></div>
+                            <!-- <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a> -->
+                            <a class="dropdown-item" href="/teacher/AddQuiz">Add New Quiz</a>
+                            
+                            </div>
+                        </li>
+                        <!-- <li class="nav-item">
+                        <a class="nav-link active" href="#">Link</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link active" href="#">Disabled</a>
+                        </li> -->
+                    </ul>
+                    
+                </div>
+            </nav>
+            
+        </div>
+        <div class="col-md-10">
+
+          <h5>{{ g.title }}</h5>
+          <p>Breadcrumbs:
+          {% for crumb in g.breadcrumbs %}
+              <a href="{{ crumb.path }}">{{ crumb.title }}</a>
+              {% if not loop.last %}&raquo;{% endif %}
+          {% endfor %}
+          </p>
+
+            {% block body %}
+            <div class="p-3"> 
+            <h2> Dashboard </h2>
+            <div class="row col-12" >
+              <div class="col-md-4">
+                <a class="list-group-item list-group-item-action" >
+                <div class="card text-white bg-info mb-3 " style="max-width: 20rem;">
+                  <div class="card-header">Students</div>
+                  <div class="card-body">
+                    <i class="fas fa-users fa-5x"></i>
+                    <h4 class="card-title float-right"> No of Students : {{ n_student }}</h4>
+                    <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                  </div>
+                </div>
+                </a>
+              </div>
+             
+              <div class="col-md-4 ">
+                <a class="list-group-item list-group-item-action" href="/teacher/AllCourse">
+                <div class="card text-white bg-warning mb-3" style="max-width: 20rem;">
+                  <div class="card-header">Courses</div>
+                  <div class="card-body">
+                    <i class="fas fa-book fa-5x"></i>
+                    <h4 class="card-title float-right"> No of Courses : {{ n_course }}</h4>                    
+                    <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                  </div>
+                </div>
+                
+                </a>
+              </div>
+
+              <div class="col-md-4 ">
+                <a class="list-group-item list-group-item-action" href="/teacher/AllQuiz">
+                <div class="card text-white bg-danger mb-3" style="max-width: 20rem;">
+                  <div class="card-header">Quizzes</div>
+                  <div class="card-body">
+                    <i class="fas fa-file-alt fa-5x"></i>
+                    <h4 class="card-title float-right"> No of Quizzes : {{ n_quize }}</h4>
+                    <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                  </div>
+                </div>
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+            {% endblock %}
+        </div>
+    </div>
+    
+</div>
+
+{% endif %}
+
+
+    
+{% endblock %}

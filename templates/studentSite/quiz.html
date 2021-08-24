@@ -1,0 +1,174 @@
+{% extends "/studentSite/studentHome.html" %}
+{% block body %}
+
+<div class="p-sm-5">
+    <!-- <h1> Quiz {{quiz}} </h1> -->
+    {% if flag %}
+    <h1> Quiz Name :  {{quiz[3]}} </h1>
+    <div class="row">
+      <div class="col-sm-8">
+        <h5> Quiz Start : {{quiz[7]}}  ( Date Time ) </h5>
+        <h5> Quiz Ended : {{quiz[8]}}  ( Date Time )</h5>
+      </div>
+      <div class="col-sm-4">
+          <h3 class="float-right"> Quiz Score : {{result}} / {{quiz[6]}}  </h3>
+      </div>
+    </div>
+    <hr>
+   
+   
+
+     <!-- {{quiz}} {{msg1}} -->
+      <h2> Exam Instructions </h2>
+        <p class="text-muted">  {{msg1}} </p>
+        
+      <div id="ResDiv" class="mb-3" >
+        {% if result %}
+         <h2>Your Result for this Quiz {{ result }} / {{quiz[6]}} </h2>  
+          <a href="/student/result?qz={{quiz}}&scr={{result}}" class="btn btn-primary"> Review </a>
+        {% else %}
+        <h3>The Quiz is Yet to start. </h3> 
+        <p> or </p>
+          <h3>You have have missed this Quiz. </h3>  
+        {% endif %}
+
+      </div>         
+
+       <div id="showstarter" class="mb-3">
+        <p class="text-primary"> The Exam will start at sharp {{quiz[7]}} and will end at sharp {{quiz[8]}} </p>
+        
+        <a href="/student/Start_quiz?qz={{quiz}} " class="btn btn-primary"> Start Attempt </a>
+               
+       </div>      
+        <!-- <h2> Quizes {{ quizes }} </h2>
+          
+        {% for quiz in  quizes: %} 
+
+                <a href="/student/quiz?id={{quiz[0]}}&name={{quiz[1]}}" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1"> {{quiz[1] }}   </h5>
+                        <small class="text-muted">{{quiz[2]}} Marks </small>
+                    </div>
+                        <p class="mb-1">Quiz Will be starting at {{quiz[3]}} <br> and <br> will end at {{quiz[4]}}</p>
+                    <small class="text-muted">Donec id elit non mi porta.</small>
+                </a>
+        
+        {% endfor %} -->
+
+    {% else %}
+
+    <h1> Enroll {{quiz[1]}} Quiz </h1>
+        <form class="p-3 col-sm-8 offset-sm-2" action="/student/Enroll_quiz?id={{quiz[0]}}&name={{quiz[1]}}&cid={{quiz[3]}}&tid={{quiz[2]}} " method="post">
+            {% if quiz %}
+
+                <div class="alert alert-dismissible alert-info">
+                    <button type="button" class="btn-close" data-dismiss="alert"></button>
+                    <strong> Enroll quiz using Image key Shown by teacher. {{msg1}}</strong> 
+                </div>
+
+            {% endif %}
+            <fieldset>
+            <legend class="text-center">Enroll For quiz</legend>    
+
+            <!-- <div class="form-group row">
+                <label for="enroll_key" class="col-sm-2 col-form-label">Enrollment Key</label>
+                <div class="col-sm-10">
+                <input type="text" required class="form-control" id="enroll_key" name = "enroll_key" aria-describedby="enroll_keyHelp" placeholder="Any Alpha Numeric Combination">
+                <small id="enroll_keyHelp" class="form-text text-muted"> Enrollment Key is kind of making quiz private but it is not compulsory  .</small>
+                </div>
+            </div> -->
+
+                <div class="form-group row"> 
+                    <button type="button" class="btn btn-md btn-outline-primary" data-toggle="modal" data-target="#modalTable">
+                        Select Image Key
+                    </button>
+                </div>
+      
+                <div class="modal" id="modalTable">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Select Image Key</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true"></span>
+                        </button>
+                      </div>
+                      <div class="modal-body ">    
+                        
+                            <ul class="nav nav-tabs">                  
+                              {% for i in  range(0,pg): %}           
+                                <li class="nav-item">
+                                  <a class="nav-link" data-toggle="tab" href="#pg{{i+1}}">{{i+1}}</a>
+                                </li>
+                              {% endfor %}
+                            </ul>
+                          
+      
+                          <div class="tab-content">
+      
+                              <div class="tab-pane fade active show" id="pg{{0+1}}">
+                                <div class="row">
+                                {% for img in  imgs[(0*9):((0+1)*9)]: %}                            
+                                    <div class="form-check col-sm-4">
+                                      <label class="form-check-label">
+                                          <input type="radio" class="form-check-input" required name="optionsRadios" id="optionsRadios{{img}}" value="{{img}}">
+                                          {{img}}<img class="col-12" style="height: 95px;" src="/static/photos/{{img}}.jpg" alt="{{img}}">
+                                      </label>
+                                    </div>                                              
+                                {% endfor %}
+                                </div>
+                              </div>
+      
+                            {% for i in  range(1,pg): %} 
+                              <!-- <p>{{i}}</p> -->
+                              <div class="tab-pane fade row" id="pg{{i+1}}">
+                                <div class="row">
+                                {% for img in  imgs[(i*9):((i+1)*9)]: %} 
+                                  <div class="form-check col-sm-4">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" required name="optionsRadios" id="optionsRadios{{img}}" value="{{img}}">
+                                        {{img}}<img class="col-12" style="height: 95px;" src="/static/photos/{{img}}.jpg" alt="{{img}}">
+                                    </label>
+                                  </div>                  
+                                {% endfor %}
+                                </div>
+                              </div>
+                            {% endfor %}
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"> OK </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+            
+            <button type="submit" class="btn btn-primary">Submit</button>
+            </fieldset>
+        </form>
+
+    {% endif %}
+</div>
+
+<script type='text/javascript' >
+
+$(document).ready(function() {
+  var st_dt = Date.parse( '{{ quiz[7] }}') ;
+  var ed_dt = Date.parse( '{{ quiz[8] }}') ;
+  var now =  Date.now() ;
+  console.log( 'now - st_dt :' ,now - st_dt );
+  console.log( 'now - ed_dt :' ,now - ed_dt );
+  // console.log('ed_dt',ed_dt , typeof(ed_dt) , Date.parse(ed_dt) )  ;
+  if (  (st_dt < now) && ( now <  (st_dt + 900000))  ){
+        $('#ResDiv').hide();
+  }
+  else{
+    $('#showstarter').hide();
+  }
+  
+});
+</script>
+
+{% endblock %}

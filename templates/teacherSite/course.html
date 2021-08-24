@@ -1,0 +1,94 @@
+{% extends "/teacherSite/teacherHome.html" %}
+{% block body %}
+
+
+<div class="p-sm-1">
+{% if course %}
+<h1>  {{ course[1] }} course </h1>
+<!-- <h2> Quizes {{ quizes }} </h2> -->
+<!-- {{ course }} -->
+{% endif %}
+<div class="row">
+    {% if course %}
+        <div class="col-md-9">
+            <h3> All Quizzes in this course.</h3>
+        </div>
+        <div class="col-md-3">   
+            <a class="btn btn-primary float-right mb-2" onclick="deleteCourse( '{{course[0]}}' )" > Delete Course </a>
+             <a class="btn btn-primary float-right mb-2 mr-1" href="/teacher/AddQuiz?cid={{course[0]}}">Add New Quiz</a>
+        </div>
+    {% else %}
+        <div class="col-md-9">
+            <h2> All My Quizes </h2>
+        </div>
+        <div class="col-md-3">   
+             
+             <a class="btn btn-primary float-right mb-2" href="/teacher/AddQuiz">Add New Quiz</a>    
+        </div>
+    {% endif %}
+</div>
+<hr>
+    <!-- {% for quiz in  quizes: %} 
+
+            <a href="/teacher/quiz?id={{quiz[0]}}&name={{quiz[1]}}" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"> {{quiz[1] }}   </h5>
+                    <small class="text-muted">{{quiz[2]}} Marks </small>
+                </div>
+                    <p class="mb-1">Quiz Will be starting at {{quiz[3]}} <br> and <br> will end at {{quiz[4]}}</p>
+                <small class="text-muted">Donec id elit non mi porta.</small>
+            </a>
+    
+    {% endfor %} -->
+    <table id='tab' class="display table responsive table-hover">
+        <thead>
+            <tr class="table-light">
+              <th scope="col"> Quizzes </th>                                 
+            </tr>
+          </thead>
+        <tbody>
+            {% for quiz in  quizes: %} 
+            
+          <tr class="table-light">
+            
+            <td>
+                <a href="/teacher/quiz?id={{quiz[0]}}&name={{quiz[1]}}" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1"> {{quiz[1] }}   </h5>
+                        <small class="text-muted">{{quiz[2]}} Marks </small>
+                    </div>
+                        <p class="mb-1">Quiz Will be starting at {{quiz[3]}} <br> and <br> will end at {{quiz[4]}}</p>
+                    <small class="text-muted">Donec id elit non mi porta.</small>
+                </a>
+        
+            </td>
+            
+            
+          </tr>
+           
+          {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+
+
+
+<script type="text/javascript">
+    $('#tab').DataTable();
+</script>
+<script type="text/javascript">
+    
+    function deleteCourse( cid ){
+
+        url = '/teacher/DeleteCourse?cid=' + cid        
+        var r = confirm("Are You sure, you want to Delete this Course, \nEvery data related to this course will be deleted. \n Quizzes \n Questions \n Results");
+        if (r == true) {
+            window.location = url ; //"/student/Home";
+        }           
+        
+    }
+
+</script>
+
+{% endblock %}

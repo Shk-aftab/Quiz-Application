@@ -1,0 +1,147 @@
+{% extends "/studentSite/studentHome.html" %}
+{% block body %}
+<div class="p-sm-2">
+    {% if all_teachers %}
+        <h1> Teachers  </h1>
+        <hr>
+        <!-- {{ all_teachers }}   -->
+        <!-- {% for teacher in  all_teachers: %}      
+            <a href="/student/teacher?id={{teacher[0]}}&name={{teacher[1]}}" class="mt-3 list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"> {{teacher[1] }}</h5>
+                    <small class="text-muted">{{teacher[0]}}</small>
+                </div>
+                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                <small class="text-muted">Donec id elit non mi porta.</small>
+            </a>
+        
+        {% endfor %} -->
+        <table id='tab' class="display table responsive table-hover">
+            <thead>
+                <tr class="table-light">
+                  <th scope="col"> Teachers </th>                                 
+                </tr>
+              </thead>
+            <tbody>
+                {% for teacher in  all_teachers: %}   
+                
+              <tr class="table-light">
+                
+                <td>
+                    <a href="/student/teacher?id={{teacher[0]}}&name={{teacher[1]}}" class="mt-3 list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"> {{teacher[1] }}</h5>
+                            <small class="text-muted">{{teacher[0]}}</small>
+                        </div>
+                            <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                        <small class="text-muted">Donec id elit non mi porta.</small>
+                    </a>
+
+                </td>
+                
+                
+              </tr>
+               
+              {% endfor %}
+            </tbody>
+        </table> 
+
+    {% elif courses %}
+        <h1> Cources  </h1>
+        <hr>
+
+        <!-- {{ courses }}  -->
+        <!-- {% for course in  courses: %}      
+            <a href="/student/course?id={{course[0]}}&name={{course[1]}}&tid={{course[2]}}" class="mt-3 list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"> {{course[1] }}</h5>
+                    <small class="text-muted">{{course[0]}}</small>
+                </div>
+                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                <small class="text-muted">Donec id elit non mi porta.</small>
+            </a>
+        
+        {% endfor %} -->
+        <table id='tab' class="display table responsive table-hover">
+            <thead>
+                <tr class="table-light">
+                  <th scope="col"> Courses </th>                                 
+                </tr>
+              </thead>
+            <tbody>
+                {% for course in  courses: %}   
+                
+              <tr class="table-light">
+                
+                <td>
+                    <a href="/student/course?id={{course[0]}}&name={{course[1]}}&tid={{course[2]}}" class="mt-3 list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"> {{course[1] }}</h5>
+                            <small class="text-muted">{{course[0]}}</small>
+                        </div>
+                            <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                        <small class="text-muted">Donec id elit non mi porta.</small>
+                    </a>
+
+                </td>
+                
+                
+              </tr>
+               
+              {% endfor %}
+            </tbody>
+        </table> 
+
+    {% elif quizes %}
+        <h1> Quizes  </h1>
+        <hr>
+
+        <!-- {{ quizes }}  -->
+        <!-- {% for quiz in  quizes: %}      
+            <a href="/student/quiz?id={{quiz[0]}}&name={{quiz[1]}}&cid={{quiz[3]}}&tid={{quiz[2]}}" class="mt-3 list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"> {{quiz[1] }}</h5>
+                    <small class="text-muted">{{quiz[0]}}</small>
+                </div>
+                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                <small class="text-muted">Donec id elit non mi porta.</small>
+            </a>
+        
+        {% endfor %} -->
+
+        <table id='tab' class="display table responsive table-hover">
+            <thead>
+                <tr class="table-light">
+                  <th scope="col"> Quizzes </th>                                 
+                </tr>
+              </thead>
+            <tbody>
+                {% for quiz in  quizes: %}   
+                
+              <tr class="table-light">
+                
+                <td>
+                    <a href="/student/quiz?id={{quiz[0]}}&name={{quiz[1]}}&cid={{quiz[3]}}&tid={{quiz[2]}}" class=" list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"> {{quiz[1] }}</h5>
+                            <small class="text-muted">{{quiz[0]}}</small>
+                        </div>
+                            <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                        <small class="text-muted">Donec id elit non mi porta.</small>
+                    </a>
+
+                </td>
+                
+                
+              </tr>
+               
+              {% endfor %}
+            </tbody>
+        </table> 
+
+    {% endif %}
+</div>
+<script type="text/javascript">
+    $('#tab').DataTable();
+</script>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if msg %}
+
+<div class="p-5">
+    <h1> {{ msg }}  </h1>
+</div>
+
+{% else %}
+<div class="p-sm-5">
+    <h1>Hello Admin {{ session['email']}} {{ session['username']  }} {{ session['role_id']  }}  </h1>
+
+    <strong> <hr style="height: 10px;"> </strong> 
+
+    <div>
+
+        <ol class="breadcrumb">
+
+            <li class="breadcrumb-item"><a href="/admin/Home"> Home </a></li>
+            <li class="breadcrumb-item"><a href="/admin/users"> Users </a></li>
+            <li class="breadcrumb-item"><a href="/admin/teachers"> Teachers </a></li>
+            <li class="breadcrumb-item"><a href="/admin/students"> Students </a></li>
+        </ol>
+       
+    </div>
+
+    {% block body %}
+
+    <div class="p-3"> 
+        <h2> Dashboard </h2>
+        <div class="row col-12" >
+          <div class="col-md-3">
+            <a class="list-group-item list-group-item-action" href="/admin/teachers">
+            <div class="card text-white bg-info mb-3 " style="max-width: 20rem;">
+              <div class="card-header">Teachers</div>
+              <div class="card-body">
+                <i class="fas fa-users fa-5x"></i>
+                <h4 class="card-title float-right"> No of Teachers : {{ n_teacher  }}</h4>
+                <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+              </div>
+            </div>
+            </a>
+          </div>
+
+          <div class="col-md-3 ">
+            <a class="list-group-item list-group-item-action" href="/admin/students">
+            <div class="card text-white bg-success mb-3" style="max-width: 20rem;">
+              <div class="card-header">Students</div>
+              <div class="card-body">
+                <i class="fas fa-users fa-5x"></i>
+                <h4 class="card-title float-right"> No of Students : {{ n_student }}</h4>
+                <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+              </div>
+            </div>
+            </a>
+          </div>
+         
+          <div class="col-md-3 ">
+            <a class="list-group-item list-group-item-action" href="">
+            <div class="card text-white bg-warning mb-3" style="max-width: 20rem;">
+              <div class="card-header">Courses</div>
+              <div class="card-body">
+                <i class="fas fa-book fa-5x"></i>
+                <h4 class="card-title float-right"> No of Courses : {{ n_course }}</h4>                    
+                <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+              </div>
+            </div>
+            
+            </a>
+          </div>
+
+          <div class="col-md-3 ">
+            <a class="list-group-item list-group-item-action" href="">
+            <div class="card text-white bg-danger mb-3" style="max-width: 20rem;">
+              <div class="card-header">Quizzes</div>
+              <div class="card-body">
+                <i class="fas fa-file-alt fa-5x"></i>
+                <h4 class="card-title float-right"> No of Quizzes : {{ n_quize }}</h4>
+                <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+              </div>
+            </div>
+            </a>
+          </div>
+
+         
+
+        </div>
+      </div>
+
+    {% endblock %}
+</div>
+{% endif %}
+
+
+{% endblock %}

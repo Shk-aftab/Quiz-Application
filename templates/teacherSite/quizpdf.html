@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Quiz App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+     <!-- Bootstrap CSS -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+ 
+
+         <!-- Optional JavaScript -->
+     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+   
+  <!-- Datatable
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+  <script type = "text/javascript"  src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script type = "text/javascript"  src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+  <script type = "text/javascript"  src="https://cdn.datatables.net/plug-ins/1.10.15/dataRender/datetime.js"></script>
+   -->
+  <!-- <script type="text/javascript" src="static/some.js"> </script> -->
+ 
+ 
+  
+</head>
+<body>
+    <hr>
+    <div class="">
+        <div class="col-sm-4 text-center">
+            <h3> <u> Quiz Name :  {{quiz[3]}} </u> </h3>
+    
+          </div>
+      <div class="col-sm-8">
+        <small> Quiz Start : {{quiz[7]}}  ( Date Time ) </small>
+        <span class="float-right">By Prof. <b>  {{ session['username'] }}  </b></span>
+
+        <br>
+        <small> Quiz Ended : {{quiz[8]}}  ( Date Time )</small>      
+          <span class="float-right"> Quiz Score : <b>  {{quiz[6]}}  </b> </span>     
+       
+      </div>
+    </div>
+    <hr>
+
+    <div class="p-sm-4" id="wrap">
+        {% for i in range(questions.shape[0]): %}
+        <div id="quest{{i+1}}"  >
+          {% set question = questions.iloc[i].to_dict() %}  
+          
+            <div class="card border border-primary  mb-3" style="max-width: 100rem;">
+            
+               <div class="card-header">  
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="text-success"> Marks : {{ question['question_marks'] }}  </h6>
+                  <h6 class="text-danger"> Neg Marks : {{ question['question_neg_marks'] }}  </h6>            
+                </div>   
+                                
+            </div>
+            <div class="card-body">     
+             
+              <h5 class="card-title"> Q.{{i+1}}. {{ question['question_text']}} </h5>
+              {% if question['question_type'] == 'MCQ' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+    
+                {% set quest_options = options[options['question_id'] == question['question_id'] ] %} 
+                {% set cor_ans = cor_answers[cor_answers['question_id'] == question['question_id'] ]['option_id'].values[0] %} 
+                
+                {% for j in range(quest_options.shape[0]): %}
+                    {% set opt = quest_options.iloc[j].to_dict()%}
+                   
+                    <div class="form-check d-flex">
+                      <label class="form-check-label">    
+                        {% if opt['option_id'] == cor_ans | int : %}                              
+                                <input type="radio" disabled checked  class="form-check-input btn-success "  value=" {{ opt['option_id'] }}">                            
+                                <b> {{opt['option']}} </b>                                                    
+
+                        {% else %}    
+                           <input type="radio" disabled   class="form-check-input "  value=" {{ opt['option_id'] }}"> 
+                           {{opt['option']}}
+                        {% endif %}
+
+                        
+                    </label>
+                    </div> 
+    
+                {% endfor %}
+    
+              {% elif question['question_type'] == 'MSQ' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+                {% set quest_options = options[options['question_id'] == question['question_id'] ] %} 
+                {% set cor_ans = cor_answers[cor_answers['question_id'] == question['question_id'] ]['option_id'].values %} 
+                
+              
+                {% for j in range(quest_options.shape[0]): %}
+                    {% set opt = quest_options.iloc[j].to_dict()%}                    
+                    <div class="form-check d-flex">
+                      <label class="form-check-label" >    
+                           
+                        {% if opt['option_id'] | float in cor_ans : %}  
+                              <input class="form-check-input  btn-success" checked  readonly  type="checkbox"  value="{{ opt['option_id'] }}">   
+                            <b> {{opt['option']}}   </b>       
+                        {% else %}    
+                           <input class="form-check-input" readonly  type="checkbox"  value="{{ opt['option_id'] }}">         
+                           {{opt['option']}}  
+                        {% endif %}
+                                             
+                      </label>                 
+                    </div>
+                {% endfor %}
+    
+              {% elif question['question_type'] == 'SA' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+                <div class="form-group" >  
+                  <label for="short_ans_txt" class="form-label"> Enter Answer </label>              
+                  <textarea class="form-control" required id="short_ans_txt" name="answer" rows="3" placeholder="Enter Short Answer" ></textarea>  
+                  <small  class="form-text text-muted">Enter answer in short evaluation will be done using NLTK Model. </small>                   
+                </div>
+              {% elif question['question_type'] == 'LA' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+                <div class="form-group">
+                  <label for="long_ans_txt" class="form-label mt-4">Default file input example</label>
+                  <input class="form-control" type="file" id="long_ans_txt">
+                </div>
+              {% elif question['question_type'] == 'MF' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+                <div>
+                {% set quest_options = options[options['question_id'] == question['question_id'] ] %} 
+
+                {% set drop_options = [] %}
+                {% set lable_options = [] %}
+                {% for j in range(quest_options.shape[0]): %}
+                    {% set opt = quest_options.iloc[j].to_dict()%}              
+                    
+                    {% set labels =  opt['option'].split('|')  %} 
+                    {% set drop_options = drop_options.append(labels[1]) %}
+                    {% set lable_options = lable_options.append(labels[0]) %}                     
+                    
+                {% endfor %}
+                
+    
+                {% for j in range(quest_options.shape[0]): %}
+    
+                <div class="form-group row text-center">
+                  <label for="exampleSelect1" class="col-sm-6 col-form-label"> {{ lable_options[j] }} == <b> {{ drop_options[j] }} </b>  </label>
+                </div>            
+                  
+                {% endfor %}
+                </div>
+              {% elif question['question_type'] == 'FB' : %}
+                <!-- <h1> {{ question['question_type']}} </h1> -->
+                {% set quest_options = options[options['question_id'] == question['question_id'] ]['option'].values %} 
+
+              
+                {% set lable_options = [] %}
+
+                {% for j in range(quest_options.shape[0]): %}                              
+                  {% set labels =  quest_options[j].split('|')  %}                  
+                  {% set lable_options = lable_options.append(labels[0]|int) %}
+                
+                {% endfor %}
+
+                {% for j in range(lable_options|max): %}
+                   
+                   <div class="form-group row text-center">
+                    <div class="col-sm-6">                    
+                      
+                        
+                        {% for i in range(quest_options.shape[0]): %}                        
+                          {% set labels =  quest_options[i].split('|')  %} 
+                        
+                          {% if  labels[0] | int == j+1  %}
+                           <label class="col-sm-6 col-form-label"> Blank [{{ j+1 }}] == <b>
+                            <U> {{ labels[1] }} </U> 
+                           </b>   </label>
+                          {% endif %}
+                        {% endfor %}
+                        
+                     
+                    </div>
+                  </div>     
+                    
+                {% endfor %}
+               
+    
+              {% endif %}
+    
+              
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        </div>
+
+  
+</body>
+</html>

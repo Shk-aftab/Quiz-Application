@@ -1,0 +1,439 @@
+{% extends "/teacherSite/teacherHome.html" %}
+{% block body %}
+
+<div class="p-sm-3">
+    <!-- {{question}} -->
+
+    {% if msg1 %}
+
+        <div class="alert alert-dismissible alert-info">
+            <button type="button" class="btn-close" data-dismiss="alert"></button>
+            <strong>{{msg1}}</strong> 
+        </div>
+
+    {% endif %}
+
+    
+    <form class="p-3 border col-md-8 offset-md-2"  action="/teacher/EditQuestion?id={{question[0]}}&cid={{question[1]}}&qid={{question[2]}}" method="post">
+        <fieldset>
+                <legend> Edit Question </legend> 
+
+                <div class="form-group">
+                    <label for="question_text" class="form-label"> Question  </label>
+                    <!-- <input type="textarea" class="form-control" required id="question_text" name="question_text" rows="3" value ={{question[4]}} > -->
+                    <textarea class="form-control" required id="question_text" name="question_text" rows="3" > {{question[4]}} </textarea>
+                    {% if question[3] == 'FB' : %}
+                         <small  class="form-text text-muted"> Replace Blanks with [Blank _NO]. </small>                   
+                    {% endif %}
+                </div>
+    
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="marks" class="form-label"> Marks </label>                          
+                        <input type="number" required class="form-control" id="marks" name="marks" value={{question[5]}} min="1">    
+                    </div>   
+                  
+                    <div class="form-group col-md-6">
+                        <label for="neg_marks" class="form-label"> Negative Marks </label>                          
+                        <input type="number" required class="form-control" id="neg_marks" name="neg_marks" value={{question[6]}} max="0">
+                    </div>    
+                </div>
+                <input type="hidden" name="ques_type" id="ques_type" value="{{question[3]}}" >
+                {% if question[3] == 'MCQ' : %}
+                    <div class="form-group row">
+                        <label for="" class="col-sm-2 col-form-label">Type</label>
+                        <div class="col-sm-10">
+                        <input type="text" readonly="" class="form-control" id="" value="Multiple Choice">
+                        </div>
+                    </div>
+                    <label> Add Options </label>
+                    <div id="options">
+                        <div class="form-group d-flex">
+                            <input type="text" class="form-control opt" id="opt" name="opt[]" rows="1" placeholder="Enter Options"  > 
+                            <a class="btn btn-primary" id="AddOpt" > <i class="fas fa-plus"></i> </a>
+                        </div>  
+                   
+                        <fieldset class="form-group" id ="answer"  >
+                            <label class="form-label">Select Answer</label>
+                            {% for option in options :  %}
+                            <div class="form-check d-flex">
+                            <label class="form-check-label">
+                                {% if option[1] in answer : %}
+                                <input type="radio" required class="form-check-input" name="Rdopti[]" id="Rdopti[]" value="{{option[1]}}" checked>
+                                {% else %}
+                                <input type="radio" required class="form-check-input" name="Rdopti[]" id="Rdopti[]" value="{{option[1]}}">
+                                {% endif %}
+                                {{option[1]}}
+                            </label>
+                            <input type="hidden" name="opti[]" id="opti[]" value="{{option[1]}}" >
+
+                            <a href="#" class="delete btn-primary btn-sm ml-auto"> <i class="fas fa-trash-alt"></i> </a>  
+                            </div>
+                            {% endfor %}
+                        </fieldset>
+                    </div>
+                    
+
+                {% elif question[3] == 'MSQ' : %}
+
+                <div class="form-group row">
+                    <label for="" class="col-sm-2 col-form-label">Type</label>
+                    <div class="col-sm-10">
+                    <input type="text" readonly="" class="form-control" id="" value="Multiple Select">
+                    </div>
+                </div> 
+
+                    <label> Add Options </label>
+                    <div id="options">
+                        <div class="form-group d-flex">
+                            <input type="text" class="form-control opt" id="opt" name="opt[]" rows="1" placeholder="Enter Options"  > 
+                            <a class="btn btn-primary" id="AddOpt" > <i class="fas fa-plus"></i> </a>
+                        </div>  
+                
+                        <fieldset class="form-group" id="answer" >
+                            <label class="form-label">Select Answer</label>
+                            {% for option in options :  %}
+                                <div class="form-check d-flex">
+                                    <label class="form-check-label" >
+                                        {% if option[1] in answer : %}
+                                        <input class="form-check-input"  type="checkbox" name="Rdopti[]" id="Rdopti[]" value="{{option[1]}}" checked>                                    
+                                        {% else %}
+                                        <input class="form-check-input"  type="checkbox" name="Rdopti[]" id="Rdopti[]" value="{{option[1]}}">                                    
+                                        {% endif %}
+                                        {{option[1]}}
+                                    </label>
+                                    <input type="hidden" name="opti[]" id="opti[]" value="{{option[1]}}" >
+                                    <a href="#" class="delete btn-primary btn-sm ml-auto"> <i class="fas fa-trash-alt"></i> </a>  
+
+                                </div>
+                               
+                            {% endfor %}
+                        </fieldset>
+                    </div>
+                {% elif question[3] == 'SA' : %}
+                    
+                    <div class="form-group row">
+                        <label for="" class="col-sm-2 col-form-label">Type</label>
+                        <div class="col-sm-10">
+                        <input type="text" readonly="" class="form-control" id="" value="Short Answer">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" >  
+                        <label for="short_ans_txt" class="form-label"> Enter Answer </label>              
+                        <textarea class="form-control" required id="short_ans_txt" name="short_ans_txt" rows="3" placeholder="Enter Short Answer" >{{answer[0]}}</textarea>  
+                        <small  class="form-text text-muted">Enter answer in short evaluation will be done using NLTK Model. </small>                   
+                    
+                    </div>
+                {% elif question[3] == 'MF' : %}
+
+                <div class="form-group row">
+                    <label for="" class="col-sm-2 col-form-label">Type</label>
+                    <div class="col-sm-10">
+                      <input type="text" readonly="" class="form-control" id="" value="Match the Following">
+                    </div>
+                  </div>
+
+                    <label> Add Pairs </label>
+                    <div id="options">
+                        <small  class="form-text text-muted">Enter One Pair at a time. </small>                   
+                        <div class="form-group d-flex">
+                            <input type="text" class="form-control opt" id="opt" name="opt[]" rows="1" placeholder="Enter Pairs Seperated by Pipeline '|'."  > 
+                            <a class="btn btn-primary" id="AddOpt" > <i class="fas fa-plus"></i> </a>
+                        </div>  
+                
+                        <fieldset class="form-group" id="answer" >
+                            <label class="form-label"> Answer Pairs </label>
+                            {% for option in options :  %}
+                                <div class="form-check d-flex">
+                                    <input class="form-control " readonly required type="text" name="Rdopti[]" id="Rdopti[]" value="{{option[1][0]}}">
+                                    <input class="form-control " readonly required type="text" name="Rdopti[]" id="Rdopti[]" value="{{option[1][1]}}">
+                                    <!-- <label class="form-check-label" for="flexCheckDefault">
+                                        {{option[1]}}
+                                    </label> -->
+                                    <input type="hidden" name="opti[]" id="opti[]" value="{{option[1][0]}}" >
+                                    <input type="hidden" name="opti[]" id="opti[]" value="{{option[1][1]}}" >
+                                    <a href="#" class="delete btn-primary btn-sm ml-auto"> <i class="fas fa-trash-alt"></i> </a>  
+
+                                </div>
+                            
+                            {% endfor %}
+                        </fieldset>
+                    </div>
+
+                {% elif question[3] == 'FB' : %}
+                    <div class="form-group row">
+                        <label for="" class="col-sm-2 col-form-label">Type</label>
+                        <div class="col-sm-10">
+                        <input type="text" readonly="" class="form-control" id="" value="Fill in the Blanks">
+                        </div>
+                    </div>
+                    
+                    <div id="options">
+                        <small  class="form-text text-muted">Enter Pair as " Fill no | Answer " at a time. </small>                   
+                        <div class="form-group d-flex">
+                            <input type="text" class="form-control opt" id="opt" name="opt[]" rows="1" placeholder="Enter Pairs Seperated by Pipeline '|'. Eg. Fill no | answer "  > 
+                            <a class="btn btn-primary" id="AddOpt" > <i class="fas fa-plus"></i> </a>
+                        </div>
+
+                        <fieldset class="form-group" id="answer" >
+                            <label class="form-label"> Answer Pairs </label>
+                            {% for option in options :  %}
+                                <div class="form-check d-flex">
+                                    <input class="form-control col-md-2" readonly required type="text" name="Rdopti[]" id="Rdopti[]" value="{{option[1][0]}}">
+                                    <input class="form-control " readonly required type="text" name="Rdopti[]" id="Rdopti[]" value="{{option[1][1]}}">
+                                    <!-- <label class="form-check-label" for="flexCheckDefault">
+                                        {{option[1]}}
+                                    </label> -->
+                                    <input type="hidden" name="opti[]" id="opti[]" value="{{option[1][0]}}" >
+                                    <input type="hidden" name="opti[]" id="opti[]" value="{{option[1][1]}}" >
+                                    <p hidden>{{option[1][0]}}</p>
+                                    <a href="#" class="delete btn-primary btn-sm ml-auto"> <i class="fas fa-trash-alt"></i> </a>  
+
+                                </div>
+                            
+                            {% endfor %}
+                            <!-- <input type="hidden" name="no_blanks" id="no_blanks" value="" > -->
+                        </fieldset>
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    <a class="col-2 offset-1 btn btn-danger" onclick="deleteQuest('{{ question[0] }}' , '{{ question[2] }}')" type="button"> Delete </a>
+                    <input class="col-2 offset-2 btn btn-primary" type="submit" value="Update" >
+                    <a class="col-2 offset-2 btn btn-secondary" onclick="cancle('{{ question[2] }}')" type="button"> Cancle </a>
+                </div>
+               
+                
+        </fieldset>   
+    </form>
+
+
+
+</div>
+ 
+
+<script type='text/javascript' >
+   
+
+    $(document).ready(function() {
+
+
+    var max_fields = 10;
+    var wrapper = $("#options");
+    var arr ;
+    var blanks = [] ;
+    var ans =  $("#answer");
+    var ques_type = $("#ques_type");
+    // var add_button = $("#AddF");
+    console.log('dsfdsfvsvs', ques_type.val())
+    var x = 1;
+
+    (function( $ ){
+    $.fn.getBlanks = function() {
+        var qt = $("#question_text").val()        
+        arr = ['0']        
+        var reg = /\[\d\]/g;
+        var result;
+        while((result = reg.exec(qt)) !== null) {            
+            arr.push(result[0][1])
+            blanks.push(result[0][1])            
+        }
+    }; 
+    })( jQuery );
+    
+    console.log('arr', arr) ;
+    $(document).getBlanks() ;
+    console.log('arr', arr) ;
+    // $(add_button).click(function(e) {
+    //     e.preventDefault();
+    //     if (x < max_fields) {
+    //         x++;
+    //         // $(wrapper).append(`<div class="form-group d-flex" >
+                
+    //         //     <textarea class="form-control opt" required id="opt" name="opt[]" rows="1" placeholder="Enter Option" >  </textarea>
+
+    //         //     <a href="#" class="delete ">Delete</a>
+    //         //     </div>`); 
+    //         $(wrapper).append(`<div class="form-group d-flex" >
+    //             <input type="text" class="form-control mr-1 opt" required id="opt" name="opt[]" placeholder="Enter Option"  > 
+
+    //             <a href="#" class="delete ">Delete</a>
+    //             </div>`); //add input box
+
+           
+
+    //     } else {
+    //         alert('You Reached the limits')
+    //     }
+    // });
+
+    // $(".opt").change(function(e) {
+    //     e.preventDefault();
+    //     console.log( 'fdsfd' , $(".opt").val() ) ;         
+    //     $(ans).append(`<option>`+ $(this).val() +`</option>`); //add input box       
+    // });
+
+    $("#short_ans_txt").change(function(e) {
+        e.preventDefault();
+
+        if(  $.trim( $("#short_ans_txt").val() )  == ''){
+            alert("Answer Can't be empty. " )
+        }
+    });
+
+    
+
+    $("#question_text").change(function(e) {
+        e.preventDefault();
+
+        if( ques_type.val() == 'FB'){
+            // $(document).getBlanks();
+            var qt = $("#question_text").val()            
+            arr = ['0']            
+            var reg = /\[\d\]/g;
+            var result;
+            while((result = reg.exec(qt)) !== null) {                
+                arr.push(result[0][1])
+            }
+            // $("#no_blanks").val(nb);
+            // $(ans).append(`  <input type="hidden" name="no_blanks" id="no_blanks" value="`+ nb +`" > `);
+            
+            alert('bsb' + arr )
+        }
+    });
+
+    $("#AddOpt").click(function(e) {
+        e.preventDefault();
+        console.log( 'fdsfd' , $(".opt").val() ) ;  
+        if(x < max_fields){
+            opt_text =  $.trim( $(".opt").val() ) ; 
+
+            if(  opt_text  != ''  ){                
+                $(".opt").val('') ;
+                if( ques_type.val() == 'MCQ'){
+                    $(ans).append(` <div class="form-check d-flex">
+                            <label class="form-check-label">
+                            <input type="radio" required class="form-check-input" name="Rdopti[]" id="Rdopti[]" value="`+ opt_text +` ">
+                            `+ opt_text +` 
+                            </label>
+                            <input type="hidden" name="opti[]" id="opti[]" value="`+opt_text+`" >
+
+                            <a href="#" class="delete btn-primary btn-sm ml-auto"> <i class="fas fa-trash-alt"></i> </a>  
+                        </div>`);
+                        x++;
+                }else if( ques_type.val() == 'MSQ' ){
+                    $(ans).append(` <div class="form-check d-flex">
+                                    <label class="form-check-label" >
+                                    <input class="form-check-input"  type="checkbox" name="Rdopti[]" id="Rdopti[]" value="`+ opt_text +`">                                   
+                                        `+ opt_text +`
+                                    </label>
+                                    <input type="hidden" name="opti[]" id="opti[]" value="`+ opt_text +`" >
+                                    <a href="#" class="delete btn-primary btn-sm ml-auto"> <i class="fas fa-trash-alt"></i> </a>  
+
+                                </div>
+                    `);
+                    x++;
+                }else if( ques_type.val() == 'MF' ){
+                    console.log( 'opt_text' , opt_text.split('|'));
+                    opt_text = opt_text.split('|') ; 
+                    if( opt_text.length > 1 && opt_text.length % 2 == 0){
+                        $(ans).append(` <div class="form-check d-flex">
+                                    <input class="form-control "  type="text" readonly required name="Rdopti[]" id="Rdopti[]" value="`+ $.trim( opt_text[0] ) +`">
+                                    <input class="form-control "  type="text" readonly required name="Rdopti[]" id="Rdopti[]" value="`+ $.trim( opt_text[1] )+`">
+                                    
+                                    <input type="hidden" name="opti[]" id="opti[]" value="`+$.trim( opt_text[0] )+`" >
+                                    <input type="hidden" name="opti[]" id="opti[]" value="`+$.trim( opt_text[1] )+`" >
+                                    <a href="#" class="delete btn-primary btn-sm ml-auto"> <i class="fas fa-trash-alt"></i> </a>  
+
+                                </div>
+                        `);
+                        x++;
+                    }else{
+                        alert('Enter Pair of options. Pair consists of only 2 options.')
+                    }                    
+                }else if( ques_type.val() == 'FB' ){
+                    console.log( 'opt_text' , opt_text.split('|'));
+                    opt_text = opt_text.split('|') ; 
+                    if( opt_text.length > 1 && opt_text.length % 2 == 0){
+                        if( $.isNumeric($.trim( opt_text[0] )) ){
+                            if(jQuery.inArray( $.trim( opt_text[0] ) , arr) != -1) {
+                                if(jQuery.inArray( $.trim( opt_text[0] ) , blanks) == -1) {
+                                    $(ans).append(` <div class="form-check d-flex">
+                                            <input class="form-control col-md-2"  type="text" readonly required name="Rdopti[]" id="Rdopti[]" value="`+ $.trim( opt_text[0] ) +`">
+                                            <input class="form-control "  type="text" readonly required name="Rdopti[]" id="Rdopti[]" value="`+ $.trim( opt_text[1] )+`">
+                                                                                        
+                                            <input type="hidden" name="opti[]" id="opti[]" value="`+$.trim( opt_text[0] )+`" >
+                                            <input type="hidden" name="opti[]" id="opti[]" value="`+$.trim( opt_text[1] )+`" >
+                                            <p hidden>`+$.trim( opt_text[0] )+`</p>
+                                            <a href="#" class="delete btn-primary btn-sm ml-auto"> <i class="fas fa-trash-alt"></i> </a>  
+
+                                        </div>
+                                    `);
+                                    x++;
+                                    if( $.trim( opt_text[0] ) != 0 ){
+                                        blanks.push( $.trim( opt_text[0] ) );
+                                    }                                    
+                                } else {
+                                alert('Answer for Blank No '+$.trim( opt_text[0] )+' Already exists.') ;
+                            }   
+                            } else {
+                                alert('No Such Blank No '+$.trim( opt_text[0] )+' in question.') ;
+                            }   
+                        }else{
+                            alert('Enter Fill No. not string.')
+                        }                       
+                    }else{
+                        alert('Enter Pair of options. Pair consists of "Fill No. | Answer" options.')
+                    }                    
+                }
+                
+            }else {
+                alert('Enter Some text before clicking button.')
+            }   
+        }else{
+            alert('You Reached the limits of Adding Options')
+        }
+    });
+
+    $(wrapper).on("click", ".delete", function(e) {
+        e.preventDefault();
+        prev_ip = $(this).prevAll('p').html();
+        console.log( 'remove' , prev_ip ) 
+        if(jQuery.inArray( $.trim( prev_ip ) , blanks) != -1){
+            console.log('blanks' , blanks)
+            // blanks.pop( prev_ip ) 
+            blanks.splice( $.inArray(prev_ip, blanks), 1 );
+            console.log('blanks' , blanks)
+        }
+        $(this).parent('div').remove();
+        x--;
+    })
+});
+
+</script> 
+
+<script type='text/javascript'>
+
+    function cancle( qid ){
+        url = '/teacher/quiz?id=' + qid ;
+        window.location = url ;     
+        // var r = confirm("Are You sure, you want to Delete this Quiz, \nEvery data related to this Quiz will be deleted. \n Questions \n Results");
+        // if (r == true) {
+        //     window.location = url ; //"/student/Home";
+        // }   
+    }
+
+    function deleteQuest( questid , qid ){
+        
+        var r = confirm("Are You sure, you want to Delete this Question, \nEvery data related to this Question will be deleted. \n Options \n Results");
+        if (r == true) {
+            url = '/teacher/DeleteQuestion?questid='+ questid + '&qid=' + qid ;   
+            window.location = url ; //"/student/Home";
+        }   
+    }
+
+   
+</script>
+
+{% endblock %}

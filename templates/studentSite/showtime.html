@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Quiz Show Time</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js" integrity="sha512-GDey37RZAxFkpFeJorEUwNoIbkTwsyC736KNSYucu1WJWFK9qTdzYub8ATxktr6Dwke7nbFaioypzbDOQykoRg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='bootstrap.min.css') }}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+  
+   
+  <!-- <script type="text/javascript" src="static/some.js"> </script> -->
+ 
+ 
+
+ <!-- <script type="text/javascript">
+  function preback() { window.history.forward();}
+  setTimeout("preback()" , 0 );
+  window.onunload = function(){null};
+  </script> -->
+  
+<script type="text/javascript">
+    $(window).on('load', function() {
+        $('#myModal').modal({backdrop: 'static', keyboard: false})  ;
+        $('#myModal').modal('show');
+        // $('#wrap').not("#quest1").hide();
+        $('#wrap').hide();
+        
+    });
+</script>
+
+<style>
+  #content:fullscreen {
+  overflow: scroll !important;
+}
+#content:-ms-fullscreen {
+  overflow: scroll !important;
+}
+#content:-webkit-full-screen {
+  overflow: scroll !important;
+}
+#content:-moz-full-screen {
+  overflow: scroll !important;
+}
+</style>
+
+</head>
+<body > 
+  <!-- style=" margin: 0;  overflow-y: hidden !important;" -->
+<script>
+
+  function Redirect() {
+    window.location = "/logout";
+  }   
+
+  // $("#finish").click(function(e) {
+  //       e.preventDefault();  
+  //       finish();        
+  //   });
+
+  function finish(flag){
+
+    url = '/student/quiz?id={{quiz[0]}}&name={{quiz[3]}}&cid={{quiz[2]}}&tid={{quiz[1]}}'
+
+    if (flag == 'finish') {
+      var r = confirm("Are You sure, you want to submit Quiz.");
+      if (r == true) {
+        window.location = url ; //"/student/Home";
+      }  
+    }  
+    else{
+        window.location = url ;// "/student/Home";
+    }
+    // else{
+    //   openFullscreen();
+    // }
+    
+  }
+  // sessionStorage.setItem("Count", 0 );
+  
+//   var t = 0
+//   var c = 0
+
+//   function increment(){
+//       if( t < 10000){
+//         t = t + 1000;
+//         console.log(t);
+//       }
+//       else{
+//         clearInterval( myvar);
+//         // t = 0;
+//       }
+     
+//   }
+  
+  
+//   document.addEventListener("visibilitychange", function(){
+//     document.title = document.visibilityState;
+//     console.log(  document.visibilityState , document.hidden , t , sessionStorage.getItem("Count"))
+    
+    
+//     if( document.hidden  && t < 10000){      
+//       myvar = setInterval( increment, 1000 ); 
+//       c += 1
+//       sessionStorage.setItem("Count", c );     
+//     } 
+//     else if( t === 10000 || sessionStorage.getItem("Count") > 2){
+//       setTimeout('Redirect()', 1000);        
+//       alert('As you have tried to cheat by exiting fullscreen you will be logout ');
+      
+//     }
+
+// });
+
+
+
+</script>
+
+
+{% if msg %}
+
+  <div class="p-5">
+      <h1> {{ msg }}  </h1>
+  </div>
+
+  {% else %}
+<div class="modal" id="myModal" >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"></span>
+          </button> -->
+        </div>
+        <div class="modal-body">
+            <p>Modal body text goes here.</p>
+            <button class="btn btn-success" onclick="openFullscreen()">  Start Now</button>
+
+        </div>
+        <div class="modal-footer">
+          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+          <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<div id="content" class="col-12" >
+<div class="row" >
+<div class="bg-light p-5 col-md-3 "  >
+    <div class="bg-info p-3 row text-center text-white rounded border-primary">
+    <h5>Questions Navigation</h5>
+      {% for i in range(questions.shape[0]): %}
+      <!-- <div class="col-2 bg-light text-primary rounded border border-primary m-1" > -->
+        <a id="in{{i+1}}" onclick="ShowDiv('{{i+1}}')" class="qn col-2 bg-light text-primary rounded border border-primary m-1" >         
+          <h6>
+            {{ i+1 }} 
+          </h6>             
+        </a>  
+      <!-- </div>           -->
+      {% endfor %}
+    </div>
+    <div class="p-3 mt-3 rounded border border-primary" >
+      <h5> Information </h5>
+      <button type="button" class="btn btn-primary border-primary"> </button> Current Question 
+      <br>
+      <button type="button" class="btn btn-light disabled border border-primary"> </button> Not Visited Question 
+      <br>
+      <button type="button" class="btn btn-secondary disabled"> </button> Visited Question 
+      <br>
+      <button type="button" class="btn btn-success disabled"> </button> Answered Question
+    </div>
+</div>
+<div class="bg-light p-5 col-md-9" >
+   
+    <div class="row ">
+        <div class="col-sm-8">
+            <h1> {{quiz[3]}} </h1>
+            <h4> Quiz Score : {{ quiz[6]}} </h4>
+        </div>
+        <div class="col-sm-3  p-1 text-center bg-warning">
+            <p>TIMER</p>
+            <div id="clockdiv" class="row text-white">
+            <div class="col-2 offset-2  bg-info border border-light">
+                <span class="days "  id="day"></span>
+                <span class="">Days</span>
+            </div>
+            <div class="col-2  bg-info border border-light ">
+                <span class="hours " id="hour"></span>
+                <div class="">Hrs</div>
+            </div>
+            <div class="col-2  bg-info border border-light">
+                <span class="minutes " id="minute"></span>
+                <div class="">Mins</div>
+            </div>
+            <div class="col-2  bg-info border border-light">
+                <span class="seconds " id="second"></span>
+                <div class="">Secs</div>
+            </div>
+            </div>        
+            <p id="demo"></p>
+        </div>
+    </div>
+
+    <!-- {{quiz}}  -->
+    <!-- <h2> {{quiz[5]}} {{quiz[6]}} {{quiz[7]}} {{quiz[8]}} {{quiz[9]}}</h2>  -->
+    <!-- {{ questions }} 
+    {{ options }} -->
+    <div id="altmsg" class="alert alert-dismissible alert-light text-center"> </div>
+    <div id="wrap">
+    {% for i in range(questions.shape[0]): %}
+    <div id="quest{{i+1}}"  >
+      <div class="card border-primary mb-3" style="max-width: 100rem;">
+        {% set question = questions.iloc[i].to_dict() %}        
+        <div class="card-header">           
+          <div class="d-flex w-100 justify-content-between">
+            <h6 class="text-success"> Marks : {{ question['question_marks'] }}  </h6>
+            <h6 class="text-danger"> Neg Marks : {{ question['question_neg_marks'] }}  </h6>            
+          </div>         
+        </div>
+        <div class="card-body">     
+          <form id="form{{i+1}}" action="/student/AnswerQuestion?id={{question}}" method="post" enctype="multipart/form-data">
+
+          <h4 class="card-title"> Q.{{i+1}}. {{ question['question_text']}} </h4>
+          <!-- <input type="hidden" name="qestion_type" value="{{ question['question_type'] }}" > -->
+          {% if question['question_type'] == 'MCQ' : %}
+            <!-- <h1> {{ question['question_type']}} </h1> -->
+
+            {% set quest_options = options[options['question_id'] == question['question_id'] ] %} 
+          
+            {% for j in range(quest_options.shape[0]): %}
+                {% set opt = quest_options.iloc[j].to_dict()%}
+                <!-- {{opt['option_id']}} <br>
+                {{opt['question_id']}} <br>
+                {{opt['option']}} <br> -->
+
+                <div class="form-check d-flex">
+                  <label class="form-check-label mt-3">                    
+                      <input type="radio"  class="form-check-input" name="answer" id="Rdopti[]" value=" {{ opt['option_id'] }}">
+                      <!-- {{ opt['option_id'] }} -->
+                      {{opt['option']}}
+                  </label>
+                </div>
+
+            {% endfor %}
+
+          {% elif question['question_type'] == 'MSQ' : %}
+            <!-- <h1> {{ question['question_type']}} </h1> -->
+            {% set quest_options = options[options['question_id'] == question['question_id'] ] %} 
+          
+            {% for j in range(quest_options.shape[0]): %}
+                {% set opt = quest_options.iloc[j].to_dict()%}
+                <!-- {{opt['option_id']}} <br>
+                {{opt['question_id']}} <br>
+                {{opt['option']}} <br> -->
+                <div class="form-check d-flex">
+                  <label class="form-check-label mt-3" >                      
+                      <input class="form-check-input"  type="checkbox" name="answer" id="Rdopti[]" value="{{ opt['option_id'] }}">                                    
+                      {{opt['option']}}                     
+                  </label>                 
+                </div>
+            {% endfor %}
+
+          {% elif question['question_type'] == 'SA' : %}
+            <!-- <h1> {{ question['question_type']}} </h1> -->
+            <div class="form-group" >  
+              <label for="short_ans_txt" class="form-label"> Enter Answer </label>              
+              <textarea class="form-control" required id="short_ans_txt" name="answer" rows="3" placeholder="Enter Short Answer" ></textarea>  
+              <small  class="form-text text-muted">Enter answer in short evaluation will be done using NLTK Model. </small>                   
+            </div>
+          {% elif question['question_type'] == 'LA' : %}
+            <!-- <h1> {{ question['question_type']}} </h1> -->
+            <div class="form-group">
+              <label for="long_ans_txt" class="form-label mt-4">Default file input example</label>
+              <input class="form-control" type="file" id="long_ans_txt">
+            </div>
+          {% elif question['question_type'] == 'MF' : %}
+            <!-- <h1> {{ question['question_type']}} </h1> -->
+            <div>
+            {% set quest_options = options[options['question_id'] == question['question_id'] ] %} 
+            {% set drop_options = [] %}
+            {% set lable_options = [] %}
+            {% for j in range(quest_options.shape[0]): %}
+                {% set opt = quest_options.iloc[j].to_dict()%}              
+                
+                {% set labels =  opt['option'].split('|')  %} 
+                {% set drop_options = drop_options.append(labels[1]) %}
+                {% set lable_options = lable_options.append(labels[0]) %}
+                <!-- {{ labels[0] }}                 -->
+                
+            {% endfor %}
+            <!-- {{drop_options }}
+            {{ lable_options}} -->
+
+            {% for j in range(quest_options.shape[0]): %}
+
+            <div class="form-group row text-center">
+              <label  class="col-sm-6 col-form-label mt-3"> {{ lable_options[j] }} </label>
+              <div class="col-sm-6 mt-3">
+                <select class="form-select" name="{{ lable_options[j] }}" id="">
+                  <option></option>
+                  {% for dop in drop_options|shuffle : %}
+                  <option> {{ dop }} </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>            
+              
+            {% endfor %}
+            </div>
+          {% elif question['question_type'] == 'FB' : %}
+            <!-- <h1> {{ question['question_type']}} </h1> -->
+            {% set quest_options = options[options['question_id'] == question['question_id'] ] %} 
+            {% set drop_options = [] %}
+            {% set lable_options = [] %}
+            {% for j in range(quest_options.shape[0]): %}
+                {% set opt = quest_options.iloc[j].to_dict()%}              
+                
+                {% set labels =  opt['option'].split('|')  %} 
+                {% set drop_options = drop_options.append(labels[1]) %}
+                {% set lable_options = lable_options.append(labels[0]|int) %}
+                <!-- {{ labels[0] }}                 -->
+                
+            {% endfor %}
+            
+            {% for j in range(lable_options|max): %}
+              <div class="form-group row text-center">
+                <label for="exampleSelect1" class="col-sm-6 col-form-label mt-3"> 
+                  <!-- {{ lable_options[j] }}  -->
+                  Blank [{{ j+1 }}] 
+                  <!-- <input type="hidden" value="{{ j+1 }}" name="blank" > -->
+                </label>
+                <div class="col-sm-6 mt-3">
+                  <select class="form-select" name="{{ j+1 }}" >
+                    <option></option>
+                    {% for dop in drop_options|shuffle : %}
+                    <option> {{ dop }} </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>            
+              
+            {% endfor %}
+
+          {% endif %}
+
+          <div class="d-flex w-100 justify-content-between mt-5 ">
+            <a onclick="ShowDiv('{{i}}')" class="btn btn-info"> Previous </a>   
+            <input type="submit" onclick="SaveAns('{{i+1}}' , {{question}} )" class="btn btn-success save" value="Save"> 
+            <!-- onclick="SaveAns('{{i}}')" -->
+            <a onclick="ShowDiv('{{i+2}}')" class="btn btn-info"> Next </a>       
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    </div>
+    
+    <div> 
+      <button id="finish" class="btn btn-danger btn-lg float-right" onclick="finish('finish')"> Finish </button>
+    </div>
+</div>
+</div>
+
+<div class="text-center text-white p-2 " style="margin-bottom:0 ; background-color:#2c3e50 ; font-weight:bolder"> 
+  <p>2020 @Copyrights owned by : </p>
+</div>
+</div>
+
+
+<script>
+  
+    // Date.parse( '{{ quiz[8] }}')
+    var deadline = Date.parse( '{{ quiz[8] }}') ;
+    // var deadline = new Date("dec 31, 2017 15:37:25").getTime();
+    // console.log('deadline' ,deadline , new Date("dec 31, 2017 15:37:25").getTime())
+    var x = setInterval(function() {
+      
+    var now = new Date().getTime();
+    var T = deadline - now;
+    var days = Math.floor(T / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((T%(1000 * 60 * 60 * 24))/(1000 * 60 * 60));
+    var minutes = Math.floor((T % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((T % (1000 * 60)) / 1000);
+    document.getElementById("day").innerHTML =days ;
+    document.getElementById("hour").innerHTML =hours;
+    document.getElementById("minute").innerHTML = minutes; 
+    document.getElementById("second").innerHTML =seconds; 
+    // document.getElementById("demo").innerHTML = T;
+    if (T < 0) {
+            clearInterval(x);
+            document.getElementById("demo").innerHTML = "TIME UP";
+            document.getElementById("day").innerHTML ='0';
+            document.getElementById("hour").innerHTML ='0';
+            document.getElementById("minute").innerHTML ='0' ; 
+            document.getElementById("second").innerHTML = '0';
+            finish('TimeUp');
+           }
+            
+    }, 1000);
+</script>
+   {% endif %}
+   
+<script>
+    /* Get the element you want displayed in fullscreen mode (a video in this example): */
+    var elem = document.getElementById("content");
+    // var elem = document.documentElement;
+    
+    /* When the openFullscreen() function is executed, open the video in fullscreen.
+    Note that we must include prefixes for different browsers, as they don't support the requestFullscreen method yet */
+    function openFullscreen() {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+      }
+      console.log('openfull');
+      $('#wrap').show();
+      $('#in1').removeClass(['bg-light' , 'text-primary']);
+      $('#in1').addClass([ 'bg-primary' , 'text-white' , 'curr' ]);
+      // $('#in1').removeClass('text-primary');
+      // $('#in1').addClass('text-white');
+      $('#quest1').siblings().hide();
+     
+    }
+
+    if (document.addEventListener)
+    {
+    document.addEventListener('fullscreenchange', exitHandler, false);
+    document.addEventListener('mozfullscreenchange', exitHandler, false);
+    document.addEventListener('MSFullscreenChange', exitHandler, false);
+    document.addEventListener('webkitfullscreenchange', exitHandler, false);
+    }
+
+    function exitHandler()
+    {
+      if (!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement)
+      {
+        // Run code on exit
+        setTimeout('Redirect()', 1000);  
+      }
+    }
+
+</script>
+
+<script type='text/javascript' >
+
+  
+    function tempAlert(msg,duration , status)
+    {
+   
+        var el = document.getElementById('altmsg');
+      
+        // ['alert' ,'alert-dismissible', 'alert-success']
+        if(status){
+            el.classList.add('text-success')
+            el.classList.add('border-success')
+        }
+        else{
+          el.classList.add('text-danger')
+          el.classList.add('border-danger')
+        }
+        el.innerHTML = msg;
+        setTimeout(function(){
+          if(status){
+            el.classList.remove('text-success')
+            el.classList.remove('border-success')
+          }
+          else{
+            el.classList.remove('text-danger')
+            el.classList.remove('border-danger')
+          }
+          el.innerHTML = '';
+        },duration);
+
+    }
+ 
+      
+    function ShowDiv( qno ) 
+    {  
+      // showOptions(qno);
+      // indicators code 
+
+      $('.curr').addClass(['bg-secondary' ]);
+      $('.curr').removeClass(['bg-primary' , 'curr']);
+      
+      $('#in'+qno).removeClass(['bg-light', 'bg-secondary'  , 'text-primary']);
+      $('#in'+qno).addClass([ 'bg-primary' , 'text-white' , 'curr' ] );    
+
+
+      qno = '#quest' + qno
+      console.log('ShowDiv qno' , qno)
+      $(qno).show();
+      $(qno).siblings().hide();
+      return false;
+    }
+
+    function SaveAns( qno , question_dict ) 
+    {  
+      qno = '#form' + qno
+      console.log('SaveAns qno' , qno )
+      console.log('SaveAns question_dict' , question_dict )
+      console.log(JSON.stringify(question_dict))
+      let formData = $(qno).serializeArray(); //.serialize();  //new FormData($(qno)[0]);
+      console.log('SaveAns formData' , formData)
+      var len = formData.length ;
+      for(i=0; i<len; i++){
+        console.log('formData' , formData[i].name , formData[i].value )
+      }
+      // url = '/student/AnswerQuestion?id=' + question_dict
+      $.ajax({
+                type: 'POST',
+                url: '/student/AnswerQuestion?qd=' + JSON.stringify(question_dict) ,
+                data: JSON.stringify(formData) ,
+                contentType: 'application/json;charset=UTF-8',
+                cache: false,
+                processData: false,
+                success: function(result) {
+                  if (result['status']){
+                    console.log("success" , result)
+                    $('.curr').addClass(['bg-success' ]);
+                    $('.curr').removeClass(['bg-primary' ]);
+                    tempAlert('Answer Succefully Saved' , 2000 , true);
+                  }  
+                  else{
+                    tempAlert('Answer Not selected' , 2000 , false);
+                  }               
+                },
+                error: function(result) {
+                	console.log("error")
+                }
+            });
+
+    }
+    $(".save").click(function(e) {
+        e.preventDefault();
+        console.log('save')
+        
+    });
+    
+ 
+  </script>
+</body>
+</html>

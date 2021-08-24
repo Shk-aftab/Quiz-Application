@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="jumbotron p-5 col-sm-6 offset-sm-3 text-center border-primary">
+    <strong > <h1> <legend> SignIn </legend> </h1>  </strong>
+    <br>
+    <hr>
+    <form class="p-3" action="/sign" method="post">
+        <div class="form-group">
+            <strong> <label>{{msg}}</label>  </strong> 
+        </div>
+    
+        <div class="form-group row">
+            <label class="col-sm-3" for="fname"><h5 class="sm-float-right" >First Name:</h5></label>
+            <div class="col-sm-9">
+              <input type="text" autocomplete="off" required class="form-control" id="fname" name="fname" aria-describedby="fnameHelp" placeholder="Enter First Name">
+              <!-- <small id="fnameHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->  
+            </div>
+            </div>
+    
+        <div class="form-group row">
+            <label class="col-sm-3" for="lname"><h5 class="sm-float-right" >Last Name:</h5></label>
+            <div class="col-sm-9">
+              <input type="text" autocomplete="off" required class="form-control" id="lname" name="lname" aria-describedby="lnameHelp" placeholder="Enter Last Name" >
+              <!-- <small id="lnameHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->  
+            </div>
+           </div>
+
+          <div class="form-group row">
+            <label class="col-sm-3" for="email"><h5 class="sm-float-right" >User Email:</h5></label>
+            <div class="col-sm-9">
+              <input type="email" autocomplete="off" required class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>  
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-3" for="phoneNo"><h5 class="sm-float-right">User Phone No:</h5></label>
+            <div class="col-sm-9">
+              <input type="number" autocomplete="off" required class="form-control" id="phoneNo" name="phoneNo" aria-describedby="phoneNoHelp" placeholder="Enter phoneNo">
+              <small id="phoneNoHelp" class="form-text text-muted">We'll never share your phoneNo with anyone else.</small>
+            
+            </div>
+           </div>
+
+      
+        <div class="form-group row">
+            <label class="col-sm-3" for="password"><h5 class="sm-float-right" >Password:</h5></label>
+            <div class="col-sm-9">
+              <input type="password" autocomplete="off" required class="form-control" id="password" name="password" aria-describedby="passwordHelp" placeholder="Enter password">
+              <!-- <small id="passwordHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->  
+            </div>
+           </div>
+
+          <fieldset class="form-group d-flex">
+            
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="role" id="role1" value="S" checked="">
+                Register as Student
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label ml-5">
+                <input type="radio" class="form-check-input" name="role" id="role2" value="T">
+                Register as Teacher
+              </label>
+            </div>
+            
+          </fieldset>
+
+          <button type="submit" class="btn btn-primary"> SignIn </button>
+       
+    </form>
+</div>
+
+
+
+{% endblock %}

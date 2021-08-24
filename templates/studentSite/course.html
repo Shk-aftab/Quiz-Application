@@ -1,0 +1,87 @@
+{% extends "/studentSite/studentHome.html" %}
+{% block body %}
+
+<div class="p-sm-5">
+    
+   
+    {% if flag %}
+      <h2> Quizzes in {{course[1]}} Course </h2>
+        <!-- <h2> Quizes {{ quizes }} </h2> -->
+        <!-- <a class="dropdown-item" href="/teacher/AddQuiz">Add New Quiz</a> -->
+
+        <!-- {% for quiz in  quizes: %} 
+            
+                <a href="/student/quiz?id={{quiz[0]}}&name={{quiz[1]}}&cid={{course[0]}}&tid={{course[2]}}" class="mt-3 list-group-item list-group-item-action flex-column align-items-start ">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1"> {{quiz[1] }}   </h5>
+                        <small class="text-muted">{{quiz[2]}} Marks </small>
+                    </div>
+                        <p class="mb-1">Quiz Will be starting at {{quiz[3]}} <br> and <br> will end at {{quiz[4]}}</p>
+                    <small class="text-muted">Donec id elit non mi porta.</small>
+                </a>
+            
+        {% endfor %} -->
+        <table id='tab' class="display table responsive table-hover">
+            <thead>
+                <tr class="table-light">
+                  <th scope="col"> Quizzes </th>                                 
+                </tr>
+              </thead>
+            <tbody>
+                {% for quiz in  quizes: %}   
+                
+              <tr class="table-light">
+                
+                <td>
+                    <a href="/student/quiz?id={{quiz[0]}}&name={{quiz[1]}}&cid={{course[0]}}&tid={{course[2]}}" class="mt-3 list-group-item list-group-item-action flex-column align-items-start ">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"> {{quiz[1] }}   </h5>
+                            <small class="text-muted">{{quiz[2]}} Marks </small>
+                        </div>
+                            <p class="mb-1">Quiz Will be starting at {{quiz[3]}} <br> and <br> will end at {{quiz[4]}}</p>
+                        <small class="text-muted">Donec id elit non mi porta.</small>
+                    </a>
+
+                </td>
+                
+                
+              </tr>
+               
+              {% endfor %}
+            </tbody>
+        </table> 
+
+    {% else %}
+     <h2>  Enroll {{course[1]}} Course </h2>
+        <form class="p-3 col-sm-8 offset-sm-2" action="/student/Enroll_course?id={{course[0]}}&name={{course[1]}}&tid={{course[2]}} " method="post">
+            {% if course %}
+
+                <div class="alert alert-dismissible alert-info">
+                    <button type="button" class="btn-close" data-dismiss="alert"></button>
+                    <strong> {{msg1}}</strong> 
+                </div>
+
+            {% endif %}
+            <fieldset>
+            <legend class="text-center">Enroll For Course</legend>    
+
+            <div class="form-group row">
+                <label for="enroll_key" class="col-sm-2 col-form-label">Enrollment Key</label>
+                <div class="col-sm-10">
+                <input type="text" required class="form-control" id="enroll_key" name = "enroll_key" aria-describedby="enroll_keyHelp" placeholder="Any Alpha Numeric Combination">
+                <small id="enroll_keyHelp" class="form-text text-muted"> Enrollment Key is kind of making course private but it is not compulsory  .</small>
+                </div>
+            </div>
+
+            
+            <button type="submit" class="btn btn-primary">Submit</button>
+            </fieldset>
+        </form>
+
+    {% endif %}
+</div>
+
+<script type="text/javascript">
+    $('#tab').DataTable();
+</script>
+{% endblock %}

@@ -1,0 +1,321 @@
+{% extends "/teacherSite/teacherHome.html" %}
+{% block body %}
+
+<div class="p-sm-2">
+  <!-- {{quiz}} -->
+    <!-- <h1>Quiz {{quiz}} </h1> -->
+    <h1> Quiz Name :  {{quiz[3]}} </h1>
+    <div class="row">
+      <div class="col-sm-8">
+        <h5> Quiz Start : {{quiz[7]}}  ( Date Time ) </h5>
+        <h5> Quiz Ended : {{quiz[8]}}  ( Date Time )</h5>
+      </div>
+      <div class="col-sm-4">
+          <h3 class="float-right"> Quiz Score : {{quiz[6]}}  </h3>
+      </div>
+    </div>
+    <hr>
+
+    <div class="form-group col-sm-12"> 
+        <button type="button" class="btn btn-outline-primary mr-3 " data-toggle="modal" data-target="#modaleditQuiz">
+          Edit Quiz Details
+        </button>
+        <button type="button" class="btn btn-outline-primary mr-3 " data-toggle="modal" data-target="#modalAddQuestion">
+            Add Question
+        </button>
+        <!-- <button type="button" class="btn btn-primary mr-3 " onclick="">
+          Results
+        </button> -->
+        <!-- <a class="btn btn-primary mr-3 " onclick="" > Results </a> -->
+        <a href="/teacher/enrolled?qz={{quiz}}" class="btn btn-primary  mr-3"> Results </a>
+        <a href="/teacher/pdfquiz?qz={{quiz}}" class="btn btn-primary"> Get Pdf </a>
+
+        <a class="btn btn-primary float-right mb-2" onclick="deleteQuiz( '{{quiz[0]}}' )" > Delete Quiz </a>
+
+    </div>
+
+    {% if msg1 %}
+
+    <div class="alert alert-dismissible alert-info">
+        <button type="button" class="btn-close" data-dismiss="alert"></button>
+        <strong>{{msg1}}</strong> 
+    </div>
+
+    {% endif %}
+
+    <div class="modal" id="modaleditQuiz">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Edit Quiz Details</h5>
+              <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="modal-body ">            
+                <form class="p-3 border" action="/teacher/EditQuiz?id={{quiz[0]}}&name={{quiz[3]}}" method="post">
+                    <fieldset>
+                        <legend> Quiz Details </legend> 
+
+                       
+
+                        <div class="form-group row">
+                            <label for="quiz_name" class="col-sm-2 col-form-label"> Quiz Name </label>
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control" id="quiz_name" name="quiz_name" value="{{quiz[3]}}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                          <div class='col-md-6'>
+                            <div class="form-group">
+                              <label for="startDate" class="form-label"> Select Star Datetime </label>
+                              <div class='input-group date' >
+                                  <input type='datetime-local' id='startDate' name='startDate' required class="form-control" value="{{quiz[7]}}" />
+                                  <span class="input-group-addon">
+                                  <span class="glyphicon glyphicon-calendar"></span>
+                                  </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class='col-md-6'>
+                              <div class="form-group">
+                                <label for="endDate" class="form-label"> Select End Datetime </label>
+                                <div class='input-group date' >
+                                    <input type='datetime-local' id='endDate' name='endDate' required class="form-control" value="{{quiz[8]}}" />
+                                    <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="form-label">Image Key</label>
+                          <small  class="form-text text-muted">Select the same image as above if you don't want change (Image_id : {{quiz[4]}}) or Select another Image, If you want to upload an image, upload at the Add Quiz Page and then re select here.</small>
+                          <br>
+                        <img class="col-12" style="height: 250px;"  src="/static/photos/{{quiz[4]}}.jpg" alt="{{quiz[4]}}">
+                        </div>
+
+                        <!-- <div class="form-group row">
+                          <label class="col-sm-2 col-form-label"> Image Key </label>
+                          <div class="col-sm-10">
+                        <img class="col-12" style="height: 255px;" src="/static/photos/{{quiz[4]}}.jpg" alt="{{quiz[4]}}">
+                          </div>
+                        </div> -->
+
+                        <div class="form-group row"> 
+                          <button type="button" class="btn btn-md btn-outline-primary" data-toggle="modal" data-target="#modalTable">
+                            Select Image Key
+                          </button>
+                        </div>
+                
+                          <div class="modal" id="modalTable">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title">Select Image Key</h5>
+                                  <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true"></span>
+                                  </button>
+                                </div>
+                                <div class="modal-body ">    
+                                  
+                                      <ul class="nav nav-tabs">                  
+                                        {% for i in  range(0,pg): %}           
+                                          <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#pg{{i+1}}">{{i+1}}</a>
+                                          </li>
+                                        {% endfor %}
+                                      </ul>
+                                    
+                
+                                    <div class="tab-content">
+                
+                                        <div class="tab-pane fade active show" id="pg{{0+1}}">
+                                          <div class="row">
+                                          {% for img in  imgs[(0*9):((0+1)*9)]: %}                            
+                                              <div class="form-check col-sm-4">
+                                                <label class="form-check-label">
+                                                    <input type="radio" class="form-check-input" required name="optionsRadios" id="optionsRadios{{img}}" value="{{img}}">
+                                                    {{img}}<img class="col-12" style="height: 95px;" src="/static/photos/{{img}}.jpg" alt="{{img}}">
+                                                </label>
+                                              </div>                                              
+                                          {% endfor %}
+                                          </div>
+                                        </div>
+                
+                                      {% for i in  range(1,pg): %} 
+                                        <!-- <p>{{i}}</p> -->
+                                        <div class="tab-pane fade row" id="pg{{i+1}}">
+                                          <div class="row">
+                                          {% for img in  imgs[(i*9):((i+1)*9)]: %} 
+                                            <div class="form-check col-sm-4">
+                                              <label class="form-check-label">
+                                                  <input type="radio" class="form-check-input" required name="optionsRadios" id="optionsRadios{{img}}" value="{{img}}">
+                                                  {{img}}<img class="col-12" style="height: 95px;" src="/static/photos/{{img}}.jpg" alt="{{img}}">
+                                              </label>
+                                            </div>                  
+                                          {% endfor %}
+                                          </div>
+                                        </div>
+                                      {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                  <button type="button" class="btn btn-primary" data-dismiss="modal"> OK </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                   
+               
+            </div>
+            <div class="modal-footer">
+              <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+              <button type="submit" class="btn btn-primary" > OK </button>
+            </div>
+                </fieldset>
+            </form>
+          </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalAddQuestion">
+        <div class="modal-dialog"  role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"> Add Question </h5>
+              <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="modal-body ">             
+              <form class="p-3 border" action="/teacher/AddQuestion?qid={{quiz[0]}}&cid={{quiz[2]}}&name={{quiz[3]}}" method="post">
+                <fieldset>
+                    <!-- <legend> Add Question </legend>                     -->
+                   
+                    <div class="form-group">
+                      <label for="ques_type" class="form-label">Example select</label>
+                      <select class="form-select" id="ques_type" name ="ques_type">
+                        <option value="MCQ"> Multiple Choice Question </option>
+                        <option value="MSQ"> Multiple Select Question </option>
+                        <option value="SA"> Short Answer </option>
+                        <option value="LA"> Long Answer </option>
+                        <option value="MF"> Match the Following </option>
+                        <option value="FB"> Fill in the Blanks </option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="question_text" class="form-label"> Enter Question  </label>
+                      <textarea class="form-control" required id="question_text" name="question_text" rows="3"></textarea>
+                      <small  class="form-text text-muted">Enter the question text only for now, you can add options at edit question. </small>                   
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                          <label for="marks" class="form-label"> Marks </label>                          
+                          <input type="number" required class="form-control" id="marks" name="marks" value="1" min="1">
+                          
+                        </div>   
+                        
+                        <div class="form-group col-md-6">
+                          <label for="neg_marks" class="form-label"> Negative Marks </label>                          
+                          <input type="number" required class="form-control" id="neg_marks" name="neg_marks" value="0" max="0">
+                          
+                      </div>    
+                    </div>
+
+                                  
+
+            </div>
+            <div class="modal-footer">
+              <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+              <button type="submit" class="btn btn-primary" > OK </button>
+            </div>
+          </fieldset>
+        </form>
+          </div>
+        </div>
+    </div>
+    
+    
+    <!-- {{questions}} -->
+    <!-- {% for question in  questions: %} 
+          
+          <div class="mt-3 list-group-item list-group-item-action flex-column align-items-start">
+
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"> {{question[4] }}</h5>
+                    <small class="text-muted"> Marks {{question[5]}}  </small>
+                </div>
+                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                <div class="d-flex w-100 justify-content-between">
+                  <small class="text-muted"> Negative Marks {{question[6]}} </small>
+                  <a href="/teacher/EditQuestion?id={{question[0]}}&cid={{question[1]}}&qid={{question[2]}}&name={{quiz[3]}}"  class="btn btn-primary btn-sm" > Edit </a href="/">
+
+              </div>
+          </div>  
+    {% endfor %} -->
+
+    <table id='tab' class="display table responsive table-hover">
+      <thead>
+          <tr class="table-light">
+            <th scope="col"> Questions </th>                                 
+          </tr>
+        </thead>
+      <tbody>
+        {% for question in  questions: %} 
+          
+        <tr class="table-light">
+          
+          <td>
+            <div class="mt-3 list-group-item list-group-item-action flex-column align-items-start">
+
+              <!-- <a href="/teacher/question?id={{question[0]}}&name={{question[1]}}" class="list-group-item list-group-item-action flex-column align-items-start"> -->
+                  <div class="d-flex w-100 justify-content-between">
+                      <h5 class="mb-1"> {{question[4] }}</h5>
+                      <small class="text-muted"> Marks {{question[5]}}  </small>
+                  </div>
+                      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                  <div class="d-flex w-100 justify-content-between">
+                    <small class="text-muted"> Negative Marks {{question[6]}} </small>
+                    <a href="/teacher/EditQuestion?id={{question[0]}}&cid={{question[1]}}&qid={{question[2]}}&name={{quiz[3]}}"  class="btn btn-primary btn-sm" > Edit </a href="/">
+  
+                </div>
+              <!-- </a> -->
+            </div> 
+          </td>
+                    
+        </tr>
+         
+        {% endfor %}
+      </tbody>
+  </table>
+    
+
+</div>
+<script type="text/javascript">
+  $('#tab').DataTable();
+</script>
+
+<script type="text/javascript">
+    
+  function deleteQuiz( qid ){
+
+      url = '/teacher/DeleteQuiz?qid=' + qid       
+      var r = confirm("Are You sure, you want to Delete this Quiz, \nEvery data related to this Quiz will be deleted. \n Questions \n Results");
+      if (r == true) {
+          window.location = url ; //"/student/Home";
+      }           
+      
+  }
+
+</script>
+
+
+{% endblock %}

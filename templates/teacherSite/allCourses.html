@@ -1,0 +1,63 @@
+{% extends "/teacherSite/teacherHome.html" %}
+{% block body %}
+
+<div class="p-sm-1">
+
+    <div class="row">
+        <div class="col-md-10">
+            <h1>My Courses</h1>
+        </div>
+        <div class="col-md-2" >
+            <a class="btn btn-primary float-right" href="/teacher/AddCourse">Add New Course</a>
+        </div>
+    </div>
+    <hr>
+    <!-- {{courses}} -->
+    <!-- {% for course in  courses: %} 
+
+            <a href="/teacher/Course?id={{course[0]}}&name={{course[1]}}" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"> {{course[1] }}</h5>
+                    <small class="text-muted">{{course[0]}}</small>
+                </div>
+                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                <small class="text-muted">Donec id elit non mi porta.</small>
+            </a>
+    
+    {% endfor %} -->
+
+    <table id='tab' class="display table responsive table-hover">
+        <thead>
+            <tr class="table-light">
+              <th scope="col"> Courses </th>                                 
+            </tr>
+          </thead>
+        <tbody>
+            {% for course in  courses: %}  
+            
+          <tr class="table-light">
+            
+            <td>
+                <a href="/teacher/Course?id={{course[0]}}&name={{course[1]}}" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1"> {{course[1] }}</h5>
+                        <small class="text-muted">{{course[0]}}</small>
+                    </div>
+                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                    <small class="text-muted">Donec id elit non mi porta.</small>
+                </a>
+            </td>
+            
+            
+          </tr>
+           
+          {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+<script type="text/javascript">
+    $('#tab').DataTable();
+</script>
+
+{% endblock %}
